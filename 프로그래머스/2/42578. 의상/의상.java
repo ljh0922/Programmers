@@ -13,8 +13,6 @@ class Solution {
                 c.replace(c_[1],c.get(c_[1])+1); 
         }
         
-        System.out.print(c);
-        
         for(Integer nums : c.values()){
             answer *= (nums+1);
         }
