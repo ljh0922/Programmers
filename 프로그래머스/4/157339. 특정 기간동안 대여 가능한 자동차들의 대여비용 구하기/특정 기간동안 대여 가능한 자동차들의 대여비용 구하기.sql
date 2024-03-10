@@ -1,27 +1,25 @@
 -- 코드를 입력하세요
-select DISTINCT CH.CAR_ID, 
-    CC.CAR_TYPE, FLOOR(CC.DAILY_FEE*30*(1-CP.DISCOUNT_RATE/100)) FEE
-from CAR_RENTAL_COMPANY_RENTAL_HISTORY AS CH JOIN
-    CAR_RENTAL_COMPANY_CAR AS CC ON CH.CAR_ID = CC.CAR_ID JOIN
-    # '30일 이상' 조건만 on에서 필터링
-    CAR_RENTAL_COMPANY_DISCOUNT_PLAN AS CP ON CC.CAR_TYPE = CP.CAR_TYPE AND CP.DURATION_TYPE = '30일 이상'
-WHERE 
-    # suv랑 세단만 필터링
-    CC.CAR_TYPE IN ('SUV','세단') AND
-    # 11월 한달 동안 대여가능한 car_id 필터링 
-    CH.CAR_ID NOT IN 
-        #11월 대여 불가능한 car_id 서브쿼리
-        (SELECT CAR_ID FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY 
-        WHERE 
-        MONTH(START_DATE) = 11 OR MONTH(END_DATE) = 11 OR
-            ('2022-11-01' BETWEEN START_DATE AND END_DATE))
-    # 50~200만원 요금 조건 필터링
-    AND
-    FLOOR(CC.DAILY_FEE*30*(100-CP.DISCOUNT_RATE)/100)>=500000 AND
-    FLOOR(CC.DAILY_FEE*30*(100-CP.DISCOUNT_RATE)/100)<2000000
-    ORDER BY FEE DESC, CAR_TYPE ASC, CAR_ID DESC;
+with ccc as(
+SELECT distinct car_id
+    from CAR_RENTAL_COMPANY_RENTAL_HISTORY cch
+    where EXTRACT(MONTH from cch.start_date) = 11 or
+        EXTRACT(MONTH from cch.end_date) = 11 or
+        TO_DATE('2022-11-01','YYYY-MM-DD') between start_date and end_date)        
+, dt_30 as(
+select * from CAR_RENTAL_COMPANY_DISCOUNT_PLAN 
+where duration_type = '30일 이상' and (car_type = '세단' or car_type = 'SUV'))
+, sub as(
+select 
+    crc.CAR_ID,
+    crc.CAR_TYPE,
+    crc.DAILY_FEE*30*(1-d3.DISCOUNT_RATE*0.01) FEE
+from
+CAR_RENTAL_COMPANY_CAR crc join dt_30 d3 on crc.car_type = d3.car_type
+where (crc.car_type = 'SUV' or crc.car_type = '세단') and crc.CAR_ID not in (select * from ccc))
 
-# SELECT CAR_ID FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY 
-# WHERE 
-# MONTH(START_DATE) = 11 OR MONTH(END_DATE) = 11 OR
-#     ('2022-11-01' BETWEEN START_DATE AND END_DATE);
+select * from sub
+    where fee between 500000 and 2000000
+    order by fee desc, car_type, car_id desc;
+
+
+
