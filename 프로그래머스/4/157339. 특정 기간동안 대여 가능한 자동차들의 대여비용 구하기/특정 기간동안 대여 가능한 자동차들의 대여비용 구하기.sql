@@ -12,5 +12,7 @@ where crcc.CAR_ID Not in
     from CAR_RENTAL_COMPANY_RENTAL_HISTORY 
     where '2022-11' between DATE_FORMAT(start_date,'%Y-%m') 
         and DATE_FORMAT(end_date,'%Y-%m')) and
-    floor(crcc.DAILY_FEE*30*(1-(0.01*crcdp.DISCOUNT_RATE))) between 500000 and 2000000;
-
+    floor(crcc.DAILY_FEE*30*(1-(0.01*crcdp.DISCOUNT_RATE))) >= 500000 and 
+    floor(crcc.DAILY_FEE*30*(1-(0.01*crcdp.DISCOUNT_RATE))) < 2000000 and
+    crcc.CAR_TYPE IN ('세단','SUV')
+order by fee desc, car_type, car_id desc;
