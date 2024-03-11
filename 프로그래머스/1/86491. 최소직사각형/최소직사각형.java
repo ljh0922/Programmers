@@ -1,3 +1,5 @@
+import java.util.*;
+
 class Solution {
     public int solution(int[][] sizes) {
         int answer = 0;
@@ -5,23 +7,10 @@ class Solution {
         int maxH = 0;
         int temp = 0;
         
-        for(int i=0; i<sizes.length; i++){
-            if(sizes[i][0]<sizes[i][1]){
-                temp = sizes[i][0];
-                sizes[i][0] = sizes[i][1];
-                sizes[i][1] = temp;
-            } 
+        for(int[] ss: sizes){
+            maxW = Math.max(maxW,Math.max(ss[0],ss[1]));
+            maxH = Math.max(maxH,Math.min(ss[0],ss[1]));
         }
-        
-        for(int i=0; i<sizes.length; i++){
-            if(maxW<sizes[i][0]){
-                maxW = sizes[i][0];
-            }
-            if(maxH<sizes[i][1]){
-                maxH = sizes[i][1];
-            }
-        }
-
         
         return maxW*maxH;
     }
