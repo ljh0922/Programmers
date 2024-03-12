@@ -1,32 +1,29 @@
 import java.util.*;
 
 class Solution {
-    public List<Integer> solution(int[] answers) {
-        int[] result = new int[3];
-        int[][] patterns = new int[3][];
-        patterns[0] = new int[]{1, 2, 3, 4, 5};
-        patterns[1] = new int[]{2, 1, 2, 3, 2, 4, 2, 5};
-        patterns[2] = new int[]{3, 3, 1, 1, 2, 2, 4, 4, 5, 5};
-        int max_result = result[0];
-        List<Integer> winner = new ArrayList<>();
-        
-        ArrayList<ArrayList<Integer>> testers = new ArrayList<>(); 
-        
-        for(int i=0; i<3; i++){
-            testers.add(new ArrayList<>());
-            while(testers.get(i).size()<answers.length )
-                for(int p : patterns[i])
-                    testers.get(i).add(p);
+    public static int[] solution(int[] answers) {
+        int[][] patterns = {
+                {1, 2, 3, 4, 5},
+                {2, 1, 2, 3, 2, 4, 2, 5},
+                {3, 3, 1, 1, 2, 2, 4, 4, 5, 5}
+        };
+
+        int[] hit = new int[3];
+        for(int i = 0; i < hit.length; i++) {
+            for(int j = 0; j < answers.length; j++) {
+                if(patterns[i][j % patterns[i].length] == answers[j]) hit[i]++;
+            }
         }
-        
-        for(int i=0; i<answers.length; i++)
-            for(int j=0; j<3; j++)
-                if(answers[i]==testers.get(j).get(i))
-                    result[j]++;
-        
-        for(int r : result) if(max_result<r) max_result=r;
-        for(int i=0; i<result.length; i++)
-            if(max_result==result[i]) winner.add(i+1);
-        return winner;
+
+        int max = Math.max(hit[0], Math.max(hit[1], hit[2]));
+        List<Integer> list = new ArrayList<>();
+        for(int i = 0; i < hit.length; i++)
+            if(max == hit[i]) list.add(i + 1);
+
+        int[] answer = new int[list.size()];
+        int cnt = 0;
+        for(int num : list)
+            answer[cnt++] = num;
+        return answer;
     }
 }
