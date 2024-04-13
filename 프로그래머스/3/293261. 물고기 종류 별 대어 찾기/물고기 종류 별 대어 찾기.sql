@@ -2,16 +2,16 @@
 ## 종류별 최대길이
 with max_length as(
 select 
-    fi.FISH_TYPE,
-    fni.FISH_NAME,
+    FISH_TYPE,
     max(LENGTH) LENGTH 
-from FISH_INFO fi join FISH_NAME_INFO fni on fi.FISH_TYPE = fni.FISH_TYPE
-group by fi.FISH_TYPE,fni.FISH_NAME)
+from FISH_INFO
+group by FISH_TYPE)
 
 select
     fi.ID,
-    ml.FISH_NAME,
-    ml.LENGTH
+    fni.FISH_NAME,
+    fi.LENGTH
 from
-    FISH_INFO fi join  max_length ml 
-    on fi.FISH_TYPE = ml.FISH_TYPE and fi.LENGTH = ml.LENGTH;
+    FISH_INFO fi join FISH_NAME_INFO fni on fi.FISH_TYPE = fni.FISH_TYPE
+where (fi.FISH_TYPE,fi.LENGTH) in (select * from max_length)
+order by ID;
