@@ -1,22 +1,23 @@
-with recursive EG as(
-    select 
-        ID,
-        PARENT_ID,
-        1 as GENERATION
-    from ECOLI_DATA
-    where PARENT_ID IS NULL
-    union all
-    select 
-        ED.ID,
-        ED.PARENT_ID,
-        EG.GENERATION+1
-    from ECOLI_DATA ED join EG on ED.PARENT_ID = EG.ID
+WITH RECURSIVE GEN AS (
+    SELECT
+        ID
+        , PARENT_ID
+        , 1 AS GENERATION
+    FROM ECOLI_DATA
+    WHERE PARENT_ID IS NULL
+    UNION ALL
+    SELECT
+        DATA.ID
+        , DATA.PARENT_ID
+        , GENERATION+1
+    FROM ECOLI_DATA DATA
+    JOIN GEN ON GEN.ID = DATA.PARENT_ID
 )
 
-select 
-    COUNT(*) as 'COUNT',
-    GENERATION
-from EG
-where ID NOT IN (select PARENT_ID from EG where PARENT_ID is not null)
-group by GENERATION
+SELECT
+    COUNT(*) COUNT
+    , GENERATION
+FROM GEN
+WHERE ID NOT IN (SELECT PARENT_ID FROM ECOLI_DATA WHERE PARENT_ID IS NOT NULL)
+GROUP BY GENERATION
 ORDER BY GENERATION;
