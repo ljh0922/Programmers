@@ -22,5 +22,4 @@ from
 from HR_GRADE
 GROUP BY
     EMP_NO) s join HR_EMPLOYEES e  
-    on s.EMP_NO = e.EMP_NO
-    ;
+    on s.EMP_NO = e.EMP_NO;
