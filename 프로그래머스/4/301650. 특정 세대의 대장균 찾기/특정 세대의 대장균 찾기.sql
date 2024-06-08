@@ -1,0 +1,15 @@
+-- 코드를 작성해주세요
+WITH RECURSIVE E AS (
+select *, 
+    CASE
+        WHEN PARENT_ID IS NULL THEN 1
+    END
+    AS GENERATION 
+from ECOLI_DATA WHERE PARENT_ID is null
+UNION ALL
+SELECT
+    E2.*
+    , E1.GENERATION+1
+FROM E E1 join ECOLI_DATA E2 ON E2.PARENT_ID = E1.ID
+    )
+    select ID from E WHERE GENERATION = 3 ORDER BY ID;
