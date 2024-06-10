@@ -18,7 +18,6 @@ class Solution {
             // 장르 set 추가
             genreSet.add(genres[i]);
             
-            
             // 입력 노래들 리스트 추가
             songList.add(song);
         }
@@ -47,7 +46,7 @@ class Solution {
                     Max1 = (Integer)song.get("plays");
                     genreInfo.put("Max1Id" , song.get("id"));
                 }
-                else if(Max2 <= (Integer)song.get("plays") || (((Integer)genreInfo.get("Max2Id") > (Integer)song.get("id")) && Max2 == (Integer)song.get("plays")) ){
+                else if(Max2 < (Integer)song.get("plays") || (((Integer)genreInfo.get("Max2Id") > (Integer)song.get("id")) && Max2 == (Integer)song.get("plays")) ){
                     Max2 = (Integer)song.get("plays");
                     genreInfo.put("Max2Id" , song.get("id"));
                 }
@@ -60,8 +59,8 @@ class Solution {
         
         for (int i = 0; i < genreInfoList.size() - 1; i++) {
             for (int j = 0; j < genreInfoList.size() - 1 - i; j++) {
-                Integer plays1 = (Integer) genreInfoList.get(j).getOrDefault("totalPlays", 0);
-                Integer plays2 = (Integer) genreInfoList.get(j + 1).getOrDefault("totalPlays", 0);
+                Integer plays1 = (Integer) genreInfoList.get(j).get("totalPlays");
+                Integer plays2 = (Integer) genreInfoList.get(j + 1).get("totalPlays");
 
                 if (plays1 < plays2) {
                     Map<String, Object> temp = genreInfoList.get(j);
