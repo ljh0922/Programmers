@@ -39,14 +39,14 @@ class Solution {
                 
                  totalPlays += (Integer)song.get("plays");
                 
-                if(Max1 < (Integer)song.get("plays") || (((Integer)genreInfo.get("Max1Id") > (Integer)song.get("id")) && Max1 == (Integer)song.get("plays"))) {
+                if(Max1 < (Integer)song.get("plays")) {
                     Max2 = Max1;
                     genreInfo.put("Max2Id" , genreInfo.get("Max1Id"));
                     
                     Max1 = (Integer)song.get("plays");
                     genreInfo.put("Max1Id" , song.get("id"));
                 }
-                else if(Max2 < (Integer)song.get("plays") || (((Integer)genreInfo.get("Max2Id") > (Integer)song.get("id")) && Max2 == (Integer)song.get("plays")) ){
+                else if(Max2 < (Integer)song.get("plays")){
                     Max2 = (Integer)song.get("plays");
                     genreInfo.put("Max2Id" , song.get("id"));
                 }
@@ -56,19 +56,7 @@ class Solution {
             
             genreInfoList.add(genreInfo);
         }
-        
-        for (int i = 0; i < genreInfoList.size() - 1; i++) {
-            for (int j = 0; j < genreInfoList.size() - 1 - i; j++) {
-                Integer plays1 = (Integer) genreInfoList.get(j).get("totalPlays");
-                Integer plays2 = (Integer) genreInfoList.get(j + 1).get("totalPlays");
-
-                if (plays1 < plays2) {
-                    Map<String, Object> temp = genreInfoList.get(j);
-                    genreInfoList.set(j, genreInfoList.get(j + 1));
-                    genreInfoList.set(j + 1, temp);
-                }
-            }
-        }        
+        genreInfoList.sort((o1, o2) -> Integer.compare((Integer)o2.get("totalPlays"), (Integer)o1.get("totalPlays")));
         
         List<Integer> answer = new ArrayList<>();
         for(Map<String, Object> genreInfo : genreInfoList){
