@@ -2,8 +2,11 @@ class Solution {
     public String solution(String s) {
         String answer = "";
         
-        int length = s.length();
-        answer = length%2==0? s.substring(length/2-1,length/2+1) : s.substring(length/2,length/2+1);
+        int half = s.length()/2;
+            
+        answer = s.substring(half*2==s.length()? half-1 : half, half+1);
+        
+        
         
         return answer;
     }
